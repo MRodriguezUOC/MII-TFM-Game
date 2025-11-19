@@ -1,0 +1,55 @@
+#!/bin/bash
+
+export $(grep -v '^#' .env | xargs)
+ARG1=""
+ARG2=""
+
+case "$1" in
+  "status")
+    docker container ls -a | grep "$INAME"
+    exit 
+    ;;
+  "rm")
+    docker container rm $INAME
+    exit 
+    ;;
+  "stop")
+    docker container stop $INAME
+    exit 
+    ;;
+esac
+
+if [ "$1" == "-i" ]; then
+  ARG1="-i"
+  ARG2="/bin/bash"
+  if [ $(docker container ls -a | grep "$INAME" | grep -c "Up ") -eq 1 ]; then
+      echo "Exec"
+      docker exec $ARG1 -t $INAME $ARG2
+    exit $?
+  fi
+fi
+
+if [ $(docker container ls -a | grep "$INAME" | grep -c "Exited ") -eq 1 ]; then
+  echo "Start"
+  docker start -a $ARG1 $INAME
+  exit $?
+fi
+
+docker build \
+  --build-arg UNAME=${UNAME} \
+  --build-arg UID=${UID} \
+  --build-arg GID=${GID} \
+  -t="$INAME" .
+
+if [ $? -eq 0 ]; then
+  echo "Run"
+#  read -p "Remove previous container? [y|n] " YN
+#  if [ $YN == "y" ]; then
+#    docker container rm $INAME
+#  fi
+  #docker run --rm -v $(pwd):/work -it tfm
+  #docker run --rm -v $(pwd):/work $ARG1 --name $INAME -t $INAME $ARG2
+  docker run -v $(pwd):/work $ARG1 --name $INAME -t $INAME $ARG2
+else
+  echo "Build $INAME fail."
+fi

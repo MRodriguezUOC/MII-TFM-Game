@@ -21,8 +21,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.math.MathUtils;
 
 /**
- * Base iniciada con gemini. 
- * Prompt: Me ayudas con la creación del primer nivel
+ * Base iniciada con gemini. Prompt: Me ayudas con la creación del primer nivel
  * del juego? Te recuerdo, el video juego es de estética retro, osea en pixel
  * art. Y estoy usando libGDX. Mi idea, para este nivel, es un puzle, de piezas
  * cuadradas del mismo tamaño. Dependiendo de la dificultad de juego, las piezas
@@ -48,6 +47,7 @@ public class PuzzleScreen extends ScreenAdapter {
     boolean isLevelCompleted = false;
     boolean isGrayEnabled = false;
     boolean isMapEnabled = false;
+    boolean isBGEnabled = true;
     boolean isDebug = false;
 
     int difficulty;
@@ -76,14 +76,14 @@ public class PuzzleScreen extends ScreenAdapter {
         // IMPORTANT: To make the Pixel Art look sharp
         bgImage.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         puzzleImage.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        
+
         setDifficulty(difficulty);
-        
+
     }
-    
-    private void setDifficulty(int i){
+
+    private void setDifficulty(int i) {
         difficulty = i;
-        if(i < 4){
+        if (i < 4) {
             isGrayEnabled = true;
         }
         isLevelCompleted = false;
@@ -149,33 +149,37 @@ public class PuzzleScreen extends ScreenAdapter {
         // Exchange logical positions randomly
         int nCol, nRow, oCol, oRow;
         PuzzlePiece pt;
-        for (PuzzlePiece p : pieces) {
-            nRow = MathUtils.random(rows - 1);
-            nCol = MathUtils.random(cols - 1);
+        do {
+            Gdx.app.debug("PuzzleScreen", "shufflePieces");
+            for (PuzzlePiece p : pieces) {
+                nRow = MathUtils.random(rows - 1);
+                nCol = MathUtils.random(cols - 1);
 
-            pt = board[nRow][nCol];
-            if (p != pt) {
-                board[nRow][nCol] = p;
-                oRow = p.row;
-                oCol = p.col;
-                p.row = nRow;
-                p.col = nCol;
-                pt.row = oRow;
-                pt.col = oCol;
-                board[oRow][oCol] = pt;
+                pt = board[nRow][nCol];
+                if (p != pt) {
+                    board[nRow][nCol] = p;
+                    oRow = p.row;
+                    oCol = p.col;
+                    p.row = nRow;
+                    p.col = nCol;
+                    pt.row = oRow;
+                    pt.col = oCol;
+                    board[oRow][oCol] = pt;
+                }
             }
-        }
+            checkWinCondition();
+        }while(isLevelCompleted);
     }
 
     private void checkWinCondition() {
         for (PuzzlePiece p : pieces) {
             if (!p.isCorrect()) {
+                isLevelCompleted = false;
                 return;
             }
         }
 
         isLevelCompleted = true;
-        onLevelComplete();
     }
 
     private void onLevelComplete() {
@@ -259,6 +263,9 @@ public class PuzzleScreen extends ScreenAdapter {
                 swapPieces(selectedPiece, clickedPiece);
                 selectedPiece = null;
                 checkWinCondition();
+                if(isLevelCompleted){
+                    onLevelComplete();
+                }
             }
         }
     }
@@ -320,13 +327,17 @@ public class PuzzleScreen extends ScreenAdapter {
             // (Opcional) Dibujar una caja ROJA alrededor de donde debería ir el puzle
             // para ver si tus cálculos de boardOffset son correctos
             shapeRenderer.setColor(Color.RED);
-            shapeRenderer.rect(boardOffsetX-1, boardOffsetY-1, cols * pieceWidth + 1, rows * pieceHeight + 1);
+            shapeRenderer.rect(boardOffsetX - 1, boardOffsetY - 1, cols * pieceWidth + 2, rows * pieceHeight + 2);
 
             shapeRenderer.end();
         }
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
+
+        if (isBGEnabled) {
+            batch.draw(bgImage, 0, 0);
+        }
 
         if (isLevelCompleted) {
             // 1. Draw the complete perfect cabbage image (without cuts)
@@ -339,8 +350,6 @@ public class PuzzleScreen extends ScreenAdapter {
             font.draw(batch, "Toca para continuar...", boardOffsetX, boardOffsetY + ((rows / 2) * pieceHeight) - 20);
 
         } else {
-            batch.draw(bgImage, 0, 0);
-
             for (PuzzlePiece p : pieces) {
                 float drawX = boardOffsetX + (p.row * pieceWidth);
                 float drawY = boardOffsetY + ((rows - 1 - p.col) * pieceHeight);
@@ -378,8 +387,11 @@ public class PuzzleScreen extends ScreenAdapter {
                         break;
                     case Input.Keys.U:
                         if (difficulty < 10) {
-                            game.setScreen(new PuzzleScreen(game, difficulty + 1));
+                            setDifficulty(difficulty + 1);
                         }
+                        break;
+                    case Input.Keys.B:
+                        isBGEnabled = !isBGEnabled;
                         break;
                     case Input.Keys.G:
                         isGrayEnabled = !isGrayEnabled;
@@ -392,9 +404,9 @@ public class PuzzleScreen extends ScreenAdapter {
                         break;
                     case Input.Keys.D:
                         isDebug = !isDebug;
-                        if(isDebug){
+                        if (isDebug) {
                             Gdx.app.setLogLevel(Application.LOG_DEBUG);
-                        }else{
+                        } else {
                             Gdx.app.setLogLevel(Application.LOG_INFO);
                         }
                         break;

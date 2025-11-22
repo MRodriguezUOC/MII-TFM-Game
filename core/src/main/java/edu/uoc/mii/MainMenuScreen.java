@@ -14,99 +14,111 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-/** First screen of the application. Displayed after the application is created. */
+
+/**
+ * Base iniciada con gemini.
+ * Prompt: Hola Gemini. Quiero crear un videojuego
+ * utilizando libGDX (para que sea multiplataforma). Es de estética retro, por
+ * lo que las pantallas tienen que ser pixelart, con paleta de colores limitada,
+ * por ejemplo a 64 colores. Al entrar al juego, la primera pantalla tiene que
+ * mostrar una imagen de fondo, un botón que diga "Jugar" y otro que diga
+ * "Salir" ¿ Me ayudas a hacerlo?
+ * 
+ * @author Marco Rodriguez
+*/
 public class MainMenuScreen implements Screen {
     
     private final Game game;
     private Stage stage;
     private Skin skin;
     private Texture backgroundTexture;
-
-    // Asumimos una resolución "virtual" retro, por ejemplo 320x180
-    private static final int VIRTUAL_WIDTH = 320;
-    private static final int VIRTUAL_HEIGHT = 320;    
-    
+   
 public MainMenuScreen(final Game game) {
         this.game = game;
 
-        // 1. Crear el Viewport y el Stage
-        // FitViewport mantiene la relación de aspecto (ideal para pixel art)
-        stage = new Stage(new FitViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT));
+        /* 1. Create the Viewport and the Stage
+              The Stage knows where the actors are.
+              The viewport is what the player sees.
+              A fitViewport maintains the aspect ratio.
+        */
+        stage = new Stage(new FitViewport(RetroScreen.VIRTUAL_WIDTH, RetroScreen.VIRTUAL_HEIGHT));
 
-        // 2. Cargar el Skin (que define el estilo de los botones)
-        // Asegúrate de tener los archivos ui.json, ui.atlas y la fuente .fnt en la carpeta "ui"
+        // 2. Load the Skin (which defines the style of the buttons)
+        
         try {
-            skin = new Skin(Gdx.files.internal("ui/ui2.json"));
+            skin = new Skin(Gdx.files.internal("ui/ui.json"));
         } catch (Exception e) {
             Gdx.app.error("MainMenuScreen", "No se pudo cargar el skin", e);
-            // Crea un skin por defecto si falla para que no crashee
+            // Create a default skin if it fails so it doesn't crash
             skin = new Skin(); 
         }
 
-        // 3. Cargar la textura de fondo y aplicar filtro NEAREST
+        // 3. Load the background texture and apply the NEAREST filter
         backgroundTexture = new Texture(Gdx.files.internal("01-Portada.png"));
         backgroundTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         Image backgroundImage = new Image(backgroundTexture);
 
-        // 4. Crear la tabla que organizará todo
+        // 4. Create the table that will organize everything
         Table mainTable = new Table();
-        mainTable.setFillParent(true); // Hace que la tabla ocupe toda la pantalla
+        mainTable.setFillParent(true); 
 
-        // 5. Añadir la imagen de fondo a la tabla
-        // .expand() y .fill() hacen que la imagen ocupe todo el espacio de la tabla
+        // 5. Add the background image to the table
+        // .expand() and .fill() make the image fill the entire table space
         mainTable.add(backgroundImage).expand().fill();
         
-        // 6. Crear otra tabla para los botones, superpuesta al fondo
+        // 6. Create another table for the buttons, overlaid on the background.
         Table buttonTable = new Table();
         buttonTable.setFillParent(true);
         buttonTable.center(); // Centra los botones
 
-        // 7. Crear los botones usando el Skin
+        // 7. Create the buttons using the Skin
         TextButton playButton = new TextButton("Jugar", skin);
         TextButton exitButton = new TextButton("Salir", skin);
 
-        // 8. Añadir Listeners (acciones) a los botones
+        // 8. Add Listeners (actions) to the buttons
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen", "Botón 'Jugar' pulsado");
-                // Aquí cambiarías a la pantalla de juego
-                // game.setScreen(new GameScreen(game)); 
+                Gdx.app.debug("MainMenuScreen", "Boton 'Jugar' pulsado");
+                game.setScreen(new PuzzleScreen(game,1));
+                Gdx.app.debug("MainMenuScreen", "setScreen");
             }
         });
 
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen", "Botón 'Salir' pulsado");
-                Gdx.app.exit(); // Cierra el juego
+                Gdx.app.debug("MainMenuScreen", "Botón 'Salir' pulsado");
+                Gdx.app.exit();
             }
         });
 
-        // 9. Añadir los botones a la tabla de botones
+        // 9. Add the buttons to the button table
         buttonTable.add(playButton).pad(10).width(100).height(30);
         buttonTable.row(); // Nueva fila
         buttonTable.add(exitButton).pad(10).width(100).height(30);
 
-        // 10. Añadir las tablas al Stage
-        stage.addActor(mainTable);  // El fondo (se dibuja primero)
-        stage.addActor(buttonTable); // Los botones (se dibujan encima)
+        // 10. Add the tables to the Stage
+        stage.addActor(mainTable);  // The background (is drawn first)
+        stage.addActor(buttonTable); // The buttons (are drawn on top)
     }    
     
     @Override
     public void show() {
-        // Prepare your screen here.
         Gdx.input.setInputProcessor(stage);
+        //When returning from a level, if the screen size has been changed,
+        //it displays incorrectly until it is resized.
+        resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());        
     }
 
     @Override
     public void render(float delta) {
-        // Draw your screen here. "delta" is the time since last render in seconds.
-        // Limpiar la pantalla
+        // Draw screen. "delta" is the time since last render in seconds.
+        // Clean screen
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Actualizar y dibujar el Stage (la UI)
+        // Update and draw the Stage
         stage.act(delta);
         stage.draw();
     }
@@ -135,6 +147,7 @@ public MainMenuScreen(final Game game) {
     public void hide() {
         // This method is called when another screen replaces this one.
         Gdx.input.setInputProcessor(null);
+        dispose();
     }
 
     @Override

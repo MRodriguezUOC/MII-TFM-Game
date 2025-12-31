@@ -1,5 +1,6 @@
 # General
 ## Diagrama de arquitectura
+```mermaid
 graph TD
     %% Estilos
     classDef core fill:#f96,stroke:#333,stroke-width:2px;
@@ -48,8 +49,9 @@ graph TD
     Controller -->|Controla| Enemies
     Controller -.->|"Se extraen Colisiones (Rectangles)"| Map
     Renderer -.->|"Se extraen Tiles (Gráficos)"| Map
-
+```
 ## Diagrama de arquitectura modular
+```mermaid
 graph TD
     %% Estilos
     classDef base fill:#eee,stroke:#333,stroke-width:1px,stroke-dasharray: 5 5;
@@ -92,8 +94,9 @@ graph TD
     
     S2 --> C2
     S2 --> R2
-
+```
 ## Diagrama de flujo gráfico
+```mermaid
 graph TD
     User[Jugador Real] -->|Redimensiona Ventana| Screen["MiniGameXScreen.resize()"]
     Screen -->|Avisa| Viewport[MiniGameXRenderer 
@@ -104,8 +107,9 @@ graph TD
     Renderer -->|"Mueve Cámara a (5,5)"| Camera[Orthographic Camera]
     Camera -->|Genera Matriz| Batch[SpriteBatch]
     Batch -->|Pinta Sprite en Píxeles| Monitor
-
+```
 ## Diagrama de flujo tratamiento input de usuario
+```mermaid
 graph LR
     User((Usuario)) -->|Pulsa Tecla| Hardware
     Hardware -->|Evento keyDown| InputProc[InputProcessor en MiniGameXController]
@@ -115,8 +119,9 @@ graph LR
     Flags -->|Leído por| UpdateLoop[update method]
     UpdateLoop -->|Calcula Física| Position[Nueva Posición]
     end
-
+```
 ## Secuencia ciclo de vida de un minijuego
+```mermaid
 sequenceDiagram
     participant G as MainGame
     participant GH as GameHud
@@ -166,8 +171,9 @@ sequenceDiagram
     GH->>GM: onSuccess.run()
     note over GM: SubmitScore   
     note over GM: Carga MainMenuScreen 
-
+``` 
 ## Secuencia bucle de juego
+```mermaid
 sequenceDiagram
     participant G as MainGame
     participant GH as GameHud
@@ -183,8 +189,9 @@ sequenceDiagram
     GS->>GH: render(dt)
     GH->>GM: getLives()
     GH->>SM: getPoints()
-
+```
 ## Secuencia cambio de nivel
+```mermaid
 sequenceDiagram
     participant P as Player (Input)
     participant C as PuzleController
@@ -202,9 +209,10 @@ sequenceDiagram
     Note over SM: Dispose pantalla vieja<br/>Instancia pantalla nueva
     
     SM->>G: game.setScreen(new PlatformScreen)
- 
+``` 
 # Puzle
 ## Diagrama Arquitectura
+```mermaid
 graph TD
 %% Pantalla de Juego
     GameManager:::logic
@@ -241,8 +249,9 @@ graph TD
     Controller -->|Mueve| Piece
     Controller -->|Controla| Board
     Board -->|Tiene| Piece
-
+```
 ## Secuencia inicio de juego
+```mermaid
 sequenceDiagram
     participant S as PuzzleScreen
     participant C as PuzzleController
@@ -263,8 +272,9 @@ sequenceDiagram
     C->>GM: setHudMessage("Mov: 0/X")
     
     Note over C: =>Secuencia de juego
-
+```
 ## Secuencia de juego
+```mermaid
 sequenceDiagram
     participant R as PuzzleRenderer
     participant C as PuzzleController
@@ -285,8 +295,9 @@ sequenceDiagram
     C->>B: checkWinCondition()
     
     Note over C: =>Secuencia fin juego/nivel
-
+```
 ## Secuencia fin juego/nivel
+```mermaid
 sequenceDiagram
     participant C as PuzzleController
     participant B as PuzzleBoard
@@ -323,3 +334,4 @@ sequenceDiagram
 
     Note over C: =>Secuencia de juego
     end
+```

@@ -1,0 +1,4 @@
+#!/bin/bash
+VERSION=$(grep projectVersion gradle.properties | cut -d'=' -f2)
+
+java -jar lwjgl3/build/libs/IAsRevenge-$VERSION.jar

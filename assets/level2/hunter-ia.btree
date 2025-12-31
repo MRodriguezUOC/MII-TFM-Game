@@ -1,0 +1,10 @@
+import conditionPlayerInHunterRange:"edu.uoc.mii.platform.ConditionPlayerInHunterRange"
+import actionPlayerHunt:"edu.uoc.mii.platform.ActionPlayerHunt"
+import actionHunterPatrol:"edu.uoc.mii.platform.ActionHunterPatrol"
+
+root
+  selector
+    sequence
+      conditionPlayerInHunterRange
+      actionPlayerHunt
+    actionHunterPatrol

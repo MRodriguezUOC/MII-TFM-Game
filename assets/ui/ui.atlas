@@ -1,0 +1,10 @@
+
+ui.png
+size:256,256
+repeat:none
+PressStart2P-Regular
+bounds:2,100,153,153
+boton-off
+bounds:2,51,119,47
+boton-on
+bounds:2,2,119,47

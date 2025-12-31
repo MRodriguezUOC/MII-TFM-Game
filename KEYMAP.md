@@ -1,0 +1,21 @@
+# Game Manager
+- ESC: endGame()
+- H: show/hide HUD
+- F: show/hide FPS
+- I: show/hide playerInfo
+- J: show/hide debugUD
+- D: ena/diss debug
+- S: ena/diss sound
+- M: ena/diss music
+- L: add lives
+# Game Controller
+- R: resetLevel
+- N: nextLevel
+- H: ena/dis (L1:Map, L2:??)
+- U: difficulty up
+- B: ena/dis backGround
+- G: ena/dis grid
+- T: ene/dis time
+- K: kill all enemies
+- X: ena/dis invencible
+- Y: ena/dis debugIA

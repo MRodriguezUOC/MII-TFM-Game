@@ -1,0 +1,32 @@
+#!/bin/bash
+
+case "$1" in
+  "start")
+    # Para arractar el emulador
+    emulator -avd DockerPhone -no-boot-anim -gpu swiftshader_indirect & 
+    ;;
+  "comtall")
+    # Para compilar e instalar, sin cerrar el emulador
+    ./gradlew android:installDebug $2
+    ;;
+  "log")
+    # adb logcat -c
+    adb logcat -v color | grep -v "EGL_emulation\|AiAiEcho\|SsBaseTemplateCard\|PageIndicator\|BufferPoolAccessor2.0\|WifiNl80211Manager\|WifiNative\|HalDevMgr\|IPCThreadState\|BugleRcsEngine\|ChimeraSrvcProxy\|audioserver\|AS.PlaybackActivityMon\|UsageStatsService\|Codec2Client\|CCodecConfig\|MediaCodec\|CCodec\|NuPlayerDriver\|MediaPlayerService\|GenericSource\|MediaBufferGroup\|hwservicemanager\|ReflectedParamUpdater\|Codec2-ComponentInterface\|SimpleC2Component\|AudioFlinger\|TaskPersister\|FuseDaemon\|C2SoftMp3Dec\|hw-BpHwBinder\|MediaPlayer\|ActivityManager\|InetDiagMessage\|TimedProcessReaper\|BaseDepthController\|StateManager\|GmsPlayProvider\|OneSearchSuggestProvider\|StatsLog\|.gms.persistent\|BistoHotwordHelper\|logd    \|AudioTrack\|NexusLauncherModelDelegate\|GameManagerService\|SplitSelectStateCtor\|NexusLauncherActivity\|TopTaskTracker\|ApfFilter\|ndroid.systemui\|BatteryExternalStatsWorker\|TelephonyManager\|KernelCpuProcStringReader\|netd     \|PhenotypeProcessReaper\|WindowManager\|ShellRecents\|UserManagerService\|AppWidgetServiceImpl"
+    ;;
+  "compile")
+    # Genera el ejecutable sin firmar
+    ./gradlew android:assembleDebug $2
+    ;;
+  "install")
+    adb wait-for-device install android/build/outputs/apk/debug/android-debug.apk
+    ;;
+  "reinstall")
+    adb install -r android/build/outputs/apk/debug/android-debug.apk
+    ;;
+  "devices")
+    adb devices
+    ;;
+  *)
+    echo "use $0 <run|log|compile|comtall|install|reinstall|devices>"
+    ;;
+esac

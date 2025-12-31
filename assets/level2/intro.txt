@@ -1,0 +1,10 @@
+level2/BlankScreen.png
+URGENTE
+La IA ha lanzado su próximo ataque.
+Esta vez contra la máquina que está montando el prototipo de la GameBoy.
+---
+level2/BlankScreen.png
+Ha mandado varios nanobots para sabotearla.
+Nosotros hemos podido mandar uno. Que no te toquen, salta encima y anúlalos.
+Corre ¡no perdamos tiempo!
+---

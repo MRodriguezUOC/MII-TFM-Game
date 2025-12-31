@@ -1,0 +1,58 @@
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+eclipse.project.name = appName + '-core'
+
+dependencies {
+  api "com.badlogicgames.gdx:gdx:$gdxVersion"
+  api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+//  api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+//  api "com.badlogicgames.box2dlights:box2dlights:$box2dlightsVersion"
+//  api "com.badlogicgames.ashley:ashley:$ashleyVersion"
+//  api "com.bladecoder.ink:blade-ink:$bladeInkVersion"
+//  api "com.github.tommyettinger:sjInGameConsole:$inGameConsoleVersion"
+//  api "de.tomgrill.gdxdialogs:gdx-dialogs-core:$dialogsVersion"
+//  api "com.github.tommyettinger:libgdx-utils-box2d:$utilsBox2dVersion"
+//  api "com.github.tommyettinger:libgdx-utils:$utilsVersion"
+
+  if(enableGraalNative == 'true') {
+    implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
+  }
+}
+
+task generateConfig {
+    // Definimos la ruta donde se creará el archivo Java
+    // AJUSTA EL PAQUETE "edu/uoc/mii" A TU PAQUETE REAL
+    def path = "$projectDir/src/main/java/edu/uoc/mii/conf/GameConfig.java"
+    
+    doLast {
+        // Leemos si nos han pasado el parámetro "env". Si no, por defecto es 'dev'
+        def env = project.hasProperty('env') ? project.env : 'dev'
+        def isDev = env == 'dev'
+        
+        // Contenido del archivo Java
+        def content = """package edu.uoc.mii.conf;
+
+/**
+ *
+ * @author Marco Rodriguez
+ */
+public class GameConfig {
+    // ESTE ARCHIVO ES GENERADO AUTOMÁTICAMENTE POR GRADLE. NO EDITAR.
+    public static final boolean IS_DEV = ${isDev};
+    
+    public static final String API_URL = IS_DEV 
+        ? "http://localhost:8080/api" 
+        : "https://iasrevenge.bytesretro.es/api";
+
+    public static final int VIRTUAL_WIDTH = RetroScreenResolution.A500.getWidth();
+    public static final int VIRTUAL_HEIGHT = RetroScreenResolution.A500.getHeight();
+
+}
+"""
+        def file = new File(path)
+        file.write(content)
+        
+        println ">>> Generando GameConfig.java para entorno: " + env.toUpperCase()
+    }
+}
+
+compileJava.dependsOn generateConfig

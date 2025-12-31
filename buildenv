@@ -1,0 +1,111 @@
+#!/bin/bash
+
+export $(grep -v '^#' .env | xargs)
+
+buildImage() {
+   docker build \
+      --build-arg UNAME=${UNAME} \
+      --build-arg UID=${UID} \
+      --build-arg GID=${GID} \
+      --build-arg KVMGID=${KVMGID} \
+      -t="$INAME" .
+   if [ $? -ne 0 ]; then
+      echo "Build $INAME fail."
+      exit -1
+   fi
+}
+
+startI() {
+   xhost +local:docker
+   CNAME=$INAME-I
+   ARG1="/bin/bash"
+   STATUS=$(docker container inspect $CNAME 2>/dev/null | grep "Status" | cut -d'"' -f4)
+   echo "Status:$STATUS"
+   if [ "$STATUS" == "running" ]; then
+      echo "Exec"
+      docker exec -i -t $CNAME $ARG1
+      exit $?
+   elif [[ "$STATUS" == "exited" || "$STATUS" == "created" ]]; then
+      echo "Start"
+      docker start -a -i $CNAME
+      exit $?
+   else
+      echo "Run"
+      docker run --net=host --device /dev/kvm \
+         -e DISPLAY=$DISPLAY -e QT_X11_NO_MITSHM=1 \
+         -v /tmp/.X11-unix:/tmp/.X11-unix \
+         -v $HOME/.Xauthority:/home/$UNAME/.Xauthority \
+         -v $HOME/.gradle:/home/$UNAME/.gradle \
+         -v $(pwd):/work \
+         -i -t --name $CNAME \
+         --entrypoint $ARG1 \
+         $INAME
+      exit $?
+   fi
+}
+
+start() {
+   if [ $(docker image ls -a | grep -c "$INAME") -eq 0 ]; then
+      buildImage
+   fi
+
+   if [ "$1" == "-i" ]; then
+      startI
+   fi
+
+   STATUS=$(docker container inspect $INAME 2>/dev/null | grep "Status" | cut -d'"' -f4)
+   echo "Arguments: $@, status:$STATUS"
+   if [ "$STATUS" == "running" ]; then
+      echo "Wait previuos command to finish"
+      exit -1
+   elif [[ "$STATUS" == "exited" || "$STATUS" == "created" ]]; then
+      ARGS=$(docker inspect --format='{{join .Args " "}}' $INAME 2>/dev/null)
+      if [[ "$@" == "$ARGS" ]]; then
+         echo "Start"
+         docker start -a $INAME
+         return $?
+      else
+         docker container rm $INAME
+      fi
+   fi
+   echo "Run"
+   docker run \
+      -e DISPLAY=$DISPLAY -e QT_X11_NO_MITSHM=1 \
+      -v $HOME/.gradle:/home/$UNAME/.gradle \
+      -v $(pwd):/work \
+      --name $INAME -t $INAME $@
+   return $?
+}
+
+case "$1" in
+   "status")
+      docker container ls -a | grep "$INAME"
+      docker image ls -a | grep "$INAME"
+      exit 
+      ;;
+   "stop")
+      docker container stop $INAME
+      exit 
+      ;;
+   "rm")
+      docker container rm $INAME $INAME-I
+      exit 
+      ;;
+   "rmimg")
+      docker image rm $INAME
+      exit 
+      ;;
+   "buildimg")
+      buildImage
+      exit
+      ;;
+   "lwjgl3:run")
+      echo "Compiling in container and running locally"
+      if start lwjgl3:build; then
+         ./rungame
+      fi
+      ;;
+   *)
+      start $@
+esac
+

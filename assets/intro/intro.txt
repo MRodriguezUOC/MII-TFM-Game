@@ -1,0 +1,40 @@
+intro/Intro-01.png;music/530277__mrthenoronha__horror-theme-loop-2.wav;0:27;0:17
+2036. La humanidad no cuida el planeta.
+La basura tecnológica se amontona por las calles.
+Pero a las personas solo les importa su teléfono móvil.
+---
+intro/Intro-02.png;music/18-InfiniteDarkness.mp3;0:24;0:17
+Una IA creada por el gobierno para espiar a la población, decide que tiene que hacer algo para evitar que la humanidad desaparezca.
+---
+intro/Intro-03.png;;0:21;0:15
+Aprovechando los terminales móviles, intenta hipnotizarlos para que se conviertan en títeres bajo sus órdenes.
+---
+intro/Intro-04.png;music/07-MonsterVania-1.mp3;0:18;0:12
+Pero un grupo de humanos, nacidos en la década de los 70, se revela y resiste al control.
+---
+intro/Intro-05a.png;;0:11;0:8
+Estalla una terrible guerra contra la IA.
+---
+intro/Intro-05b.png;music/616329__ash_rez__happy-8-bit-music.mp3;0:11;0:8
+La guerra finaliza, pero casi acaba con todos.
+---
+intro/Intro-06.png;;0:18;0:13
+La humanidad finalmente prospera y logra encontrar el equilibrio entre naturaleza y tecnología.
+---
+intro/Intro-07.png;music/571647__princeofworms__synthetic-spaceshipstone-moving-loop.wav;0:17;0:13
+Pero la IA no fue destruida.
+Pudo esconderse en unos nodos secretos de Internet.
+---
+intro/Intro-08.png;;0:17;0:12
+Durante siglos ha estado haciendo simulaciones para detectar por qué su plan fallo.
+---
+intro/Intro-09.png;;0:28;0:19
+Llega a la conclusión que la culpa fue de los ordenadores de los 80. 
+Que ayudaron a que esas personas tuvieran mucha creatividad y pensamiento divergente.  
+---
+intro/Intro-10.png;;0:17;0:12
+Así que en el 2600 urde un plan para ir al pasado y destruir esos ordenadores.
+---
+intro/Intro-11.png;music/05-LastMission.mp3;0:21 (3:54);0:14 (2:44)
+Por suerte, "La Resistencia", siempre ha estado vigilante por si resurgía la IA.
+¿Podrán evitar sus planes?

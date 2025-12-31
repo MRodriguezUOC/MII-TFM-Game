@@ -1,0 +1,16 @@
+level1/ZX81-StartScreen-1.png
+No te asustes.
+Tranquilo, tu ordenador no se ha roto.
+
+Somos LA RESISTENCIA y necesitamos tu ayuda.
+---
+level1/ZX81-StartScreen-2.png
+Desde el futuro una IA loca intenta averiar los ordenadores del pasado que nos ayudaron a plantarle cara.
+Su primer ataque ha sido dirigido para averiar el nuevo ZXSpectrum.
+Sí, el ordenador que te has pedido para tu cumple, lo sabemos, en el 2036 tú serás uno de los fundadores de LA RESISTENCIA.
+---
+level1/ZX81-StartScreen-2.png
+Hemos podido conectar tu ZX81 al servidor central de Sinclair Research.
+Tienes que reconstruir los planos del ZXSpectrum antes de que sean mandados a fábrica.
+Y tienes que darte prisa, el enlace no se mantendrá por mucho tiempo. Tienes que hacerlo en el menor número de movimientos.
+---

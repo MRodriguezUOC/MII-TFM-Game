@@ -1,0 +1,61 @@
+#!/bin/bash
+
+VERSION=$(grep projectVersion gradle.properties | cut -d'=' -f2)
+APP=IAsRevenge
+ENT="prod"
+OPTS="-Penv=$ENT"
+DIST=build/dist
+
+if [ ! -e $DIST ]; then
+	mkdir -p $DIST
+fi
+
+function build {
+case "$1" in
+"html")
+./gradlew html:dist $OPTS
+pushd .
+cd html/build/dist
+tar -czf ../../../$DIST/$APP-html-$VERSION-$ENT.tgz ./
+popd
+	;;
+"java")
+./gradlew lwjgl3:dist $OPTS
+mv lwjgl3/build/libs/$APP-$VERSION.jar $DIST/$APP-java-$VERSION-$ENT.jar
+	;;
+"macm1")
+./gradlew lwjgl3:packageMacM1 $OPTS
+mv lwjgl3/build/construo/dist/$APP-macM1.zip $DIST/$APP-macM1-$VERSION-$ENT.zip
+	;;
+"mac")
+./gradlew lwjgl3:packageMacX64 $OPTS
+mv lwjgl3/build/construo/dist/$APP-macX64.zip $DIST/$APP-macX64-$VERSION-$ENT.zip
+	;;
+"linux")
+./gradlew lwjgl3:packageLinuxX64 $OPTS
+mv lwjgl3/build/construo/dist/$APP-linuxX64.zip $DIST/$APP-linuxX64-$VERSION-$ENT.zip
+	;;
+"win")
+./gradlew lwjgl3:packageWinX64 $OPTS
+mv lwjgl3/build/construo/dist/$APP-winX64.zip $DIST/$APP-winX64-$VERSION-$ENT.zip
+	;;
+"android")
+./gradlew android:assembleDebug $OPTS
+mv android/build/outputs/apk/debug/android-debug.apk $DIST/$APP-android-debug-$VERSION-$ENT.apk
+	;;
+"all")
+	build html
+	build java
+	build linux
+	build mac
+	build macm1
+	build win
+	build android
+	;;
+*)
+	echo "use $0 <all|html|java|macm1|mac|linux|win|android>"
+	;;
+esac
+}
+
+build $1
